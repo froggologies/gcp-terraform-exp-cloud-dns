@@ -30,11 +30,3 @@
 #     scopes = ["cloud-platform"]
 #   }
 # }
-
-# resource "google_compute_project_metadata" "ssh_keys" {
-#   depends_on = [google_project_service.services.0, google_project_organization_policy.restore_policies.1]
-#   project    = google_project.main_project.project_id
-#   metadata = {
-#     ssh-keys = "ansible:${file("~/.ssh/ansible.pub")}"
-#   }
-# }
