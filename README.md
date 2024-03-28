@@ -3,6 +3,7 @@
 Private Cloud DNS in Google Cloud Platform (GCP) enables the management of DNS zones and records for private network resources. It facilitates the organization and accessibility of internal assets within a secure network environment, without exposing them to the public internet. This functionality ensures streamlined communication among virtual machine instances, Kubernetes clusters, and other resources using domain names within the confines of the private network.
 
 ## Requirements:
+
 Google Cloud Platform:
 - folder ID
 - billing ID
@@ -30,11 +31,9 @@ export TF_VAR_folder_id=<FOLDER_ID>
 ## Provision resources
 
 Main resources that are created for this project are:
-
 - instance-1: GCE instance for nginx server
 - instance-2: GCE instance for testing the private dns
 - private-zone (private.example.com): Private Cloud DNS
-
 
 > Change the backend in `terraform/backend.tf` to your backend configuration or delete it if you want to use local backend.
 
@@ -49,3 +48,36 @@ terraform -chdir=terraform apply -auto-approve
 ```
 
 ## Testing
+
+SSH to the instance-2:
+```
+gcloud compute ssh <INSTANCE_2_NAME> --project <PROJECT_ID> --zone us-central1-a --tunnel-through-iap
+```
+
+Curl nginx server through private DNS:
+```
+curl private.example.com
+```
+
+You should see:
+```
+<!DOCTYPE html>
+<html>
+<head>
+<title>Welcome to nginx!</title>
+.
+.
+.
+<p><em>Thank you for using nginx.</em></p>
+</body>
+</html>
+```
+
+That means the private DNS is working properly.
+
+## Cleanup
+
+Destroy terraform resources:
+```
+terraform -chdir=terraform destroy -auto-approve
+```
